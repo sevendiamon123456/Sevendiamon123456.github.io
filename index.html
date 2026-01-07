@@ -47,17 +47,45 @@ img {
 </div>
 
 <script>
-function preview() {
-    const file = document.getElementById("img").files[0];
-    if (!file) return;
+<script>
+async function preview() {
+  const input = document.querySelector('input[type="file"]');
+  if (!input.files[0]) {
+    alert("Chọn ảnh trước");
+    return;
+  }
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        document.getElementById("result").innerHTML =
-            `<img src="${e.target.result}">`;
-    };
-    reader.readAsDataURL(file);
+  const file = input.files[0];
+  const result = document.getElementById("result");
+  result.innerHTML = "⏳ AI đang xử lý...";
+
+  const response = await fetch(
+    "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2",
+    {
+      method: "POST",
+      headers: {
+        "Accept": "image/png"
+      },
+      body: file
+    }
+  );
+
+  if (!response.ok) {
+    result.innerHTML = "❌ AI lỗi hoặc quá tải";
+    return;
+  }
+
+  const blob = await response.blob();
+  const img = document.createElement("img");
+  img.src = URL.createObjectURL(blob);
+  img.style.maxWidth = "100%";
+  img.style.marginTop = "15px";
+
+  result.innerHTML = "";
+  result.appendChild(img);
 }
+</script>
+
 </script>
 </body>
 </html>
