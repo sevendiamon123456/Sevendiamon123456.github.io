@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Image to Clip Tool</title>
+<style>
+body {
+    background: #0d0d0d;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 60px;
+}
+.container {
+    max-width: 420px;
+    margin: auto;
+    border: 1px solid #333;
+    padding: 25px;
+}
+input, button {
+    margin-top: 15px;
+}
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+img {
+    max-width: 100%;
+    margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+    <h2>AI Image → Clip</h2>
+
+    <input type="file" accept="image/*" id="img"><br>
+
+    <button onclick="preview()">Upload ảnh</button>
+
+    <div id="result"></div>
+
+    <p style="opacity:0.5;margin-top:20px">
+        Demo – chuẩn bị kết nối AI
+    </p>
+</div>
+
+<script>
+function preview() {
+    const file = document.getElementById("img").files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById("result").innerHTML =
+            `<img src="${e.target.result}">`;
+    };
+    reader.readAsDataURL(file);
+}
+</script>
+</body>
+</html>
