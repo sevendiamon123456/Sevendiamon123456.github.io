@@ -1,117 +1,134 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Image to Clip Tool</title>
-<style>
-body {
-    background: #0d0d0d;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding-top: 60px;
-}
-.container {
-    max-width: 420px;
-    margin: auto;
-    border: 1px solid #333;
-    padding: 25px;
-}
-input, button {
-    margin-top: 15px;
-}
-button {
-    padding: 10px 20px;
-    cursor: pointer;
-}
-img {
-    max-width: 100%;
-    margin-top: 15px;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Private AI Image → Clip</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      background: #0f0f0f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 60px auto;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+    }
+
+    input {
+      background: #2a2a2a;
+      color: #fff;
+    }
+
+    button {
+      background: #00ffcc;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #result img {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+      animation: zoom 6s infinite alternate;
+    }
+
+    @keyframes zoom {
+      from { transform: scale(1); }
+      to { transform: scale(1.15); }
+    }
+
+    .loading {
+      opacity: 0.6;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    footer {
+      opacity: 0.4;
+      font-size: 12px;
+      margin-top: 15px;
+    }
+  </style>
 </head>
 
-<body><script>
-const pass = prompt("Nhập mật khẩu:");
-if (pass !== "123456") {
-  document.body.innerHTML = "⛔ Truy cập bị từ chối";
-}
+<body>
+
+<!-- 🔐 KHÓA WEB -->
+<script>
+  const pass = prompt("Nhập mật khẩu:");
+  if (pass !== "123456") {
+    document.body.innerHTML = "⛔ Truy cập bị từ chối";
+  }
 </script>
 
 <div class="container">
-    <input type="text" id="prompt" placeholder="Nhập mô tả AI..." style="width:100%;padding:10px;margin:10px 0;">
+  <h2>AI Image → Clip</h2>
 
-    <h2>AI Image → Clip</h2>
+  <input type="file" id="imageInput" accept="image/*">
 
-    <input type="file" accept="image/*" id="img"><br>
+  <input type="text" id="prompt" placeholder="Mô tả chuyển động AI...">
 
-    <button onclick="preview()">Upload ảnh</button>
+  <button onclick="generate()">Generate Clip</button>
 
-    <div id="result"></div>
+  <div id="loading" class="loading"></div>
+  <div id="result"></div>
 
-    <p style="opacity:0.5;margin-top:20px">
-        Demo – chuẩn bị kết nối AI
-    </p>
+  <footer>
+    Private AI Tool · Local Only
+  </footer>
 </div>
 
 <script>
-async function preview() {
-  const input = document.querySelector('input[type="file"]');
-  if (!input.files[0]) {
+function generate() {
+  const file = document.getElementById("imageInput").files[0];
+  const result = document.getElementById("result");
+  const loading = document.getElementById("loading");
+
+  if (!file) {
     alert("Chọn ảnh trước");
     return;
   }
 
-  const file = input.files[0];
-  const result = document.getElementById("result");
-  result.innerHTML = "⏳ AI đang xử lý...";
-
-  const response = await fetch(
-    "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2",
-    {
-      method: "POST",
-      headers: {
-        "Accept": "image/png"
-      },
-      body: file
-    }
-  );
-
-  if (!response.ok) {
-    result.innerHTML = "❌ AI lỗi hoặc quá tải";
-    return;
-  }
-
-  const blob = await response.blob();
-  const img = document.createElement("img");
-  img.src = URL.createObjectURL(blob);
-  img.style.maxWidth = "100%";
-  img.style.marginTop = "15px";
-
+  loading.innerText = "AI đang xử lý hình ảnh...";
   result.innerHTML = "";
-  result.appendChild(img);
-}
 
-</script><script>
-function fakeMotion(imgUrl) {
-  const video = document.createElement("video");
-  video.src = imgUrl;
-  video.autoplay = true;
-  video.loop = true;
-  video.muted = true;
-  video.style.width = "100%";
-  video.style.animation = "zoom 6s infinite alternate";
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    setTimeout(() => {
+      loading.innerText = "";
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      result.appendChild(img);
+    }, 1500);
+  };
 
-  return video;
+  reader.readAsDataURL(file);
 }
 </script>
 
-<style>
-@keyframes zoom {
-  from { transform: scale(1); }
-  to { transform: scale(1.15); }
-}
-</style>
-
 </body>
 </html>
+
