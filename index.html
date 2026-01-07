@@ -31,8 +31,16 @@ img {
 </style>
 </head>
 
-<body>
+<body><script>
+const pass = prompt("Nhập mật khẩu:");
+if (pass !== "123456") {
+  document.body.innerHTML = "⛔ Truy cập bị từ chối";
+}
+</script>
+
 <div class="container">
+    <input type="text" id="prompt" placeholder="Nhập mô tả AI..." style="width:100%;padding:10px;margin:10px 0;">
+
     <h2>AI Image → Clip</h2>
 
     <input type="file" accept="image/*" id="img"><br>
@@ -46,7 +54,6 @@ img {
     </p>
 </div>
 
-<script>
 <script>
 async function preview() {
   const input = document.querySelector('input[type="file"]');
@@ -84,8 +91,27 @@ async function preview() {
   result.innerHTML = "";
   result.appendChild(img);
 }
+
+</script><script>
+function fakeMotion(imgUrl) {
+  const video = document.createElement("video");
+  video.src = imgUrl;
+  video.autoplay = true;
+  video.loop = true;
+  video.muted = true;
+  video.style.width = "100%";
+  video.style.animation = "zoom 6s infinite alternate";
+
+  return video;
+}
 </script>
 
-</script>
+<style>
+@keyframes zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.15); }
+}
+</style>
+
 </body>
 </html>
