@@ -1,134 +1,90 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Private AI Image → Clip</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Image to Video</title>
 
-  <style>
-    body {
-      margin: 0;
-      background: #0f0f0f;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    .container {
-      max-width: 420px;
-      margin: 60px auto;
-      padding: 20px;
-      background: #1a1a1a;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
-      text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 15px;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 15px;
-    }
-
-    input {
-      background: #2a2a2a;
-      color: #fff;
-    }
-
-    button {
-      background: #00ffcc;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    #result img {
-      width: 100%;
-      border-radius: 10px;
-      margin-top: 10px;
-      animation: zoom 6s infinite alternate;
-    }
-
-    @keyframes zoom {
-      from { transform: scale(1); }
-      to { transform: scale(1.15); }
-    }
-
-    .loading {
-      opacity: 0.6;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-
-    footer {
-      opacity: 0.4;
-      font-size: 12px;
-      margin-top: 15px;
-    }
-  </style>
+<style>
+body {
+  background:#0f0f0f;
+  color:#fff;
+  font-family:Arial, sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.container {
+  width:100%;
+  max-width:420px;
+  background:#1a1a1a;
+  padding:20px;
+  border-radius:12px;
+}
+h2 { text-align:center; }
+input, textarea, button {
+  width:100%;
+  margin-top:12px;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+}
+textarea { resize:none; height:80px; }
+button {
+  background:#4f46e5;
+  color:#fff;
+  font-size:16px;
+}
+#loading {
+  display:none;
+  margin-top:15px;
+  text-align:center;
+}
+video {
+  width:100%;
+  margin-top:15px;
+  border-radius:10px;
+}
+</style>
 </head>
 
 <body>
-
-<!-- 🔐 KHÓA WEB -->
-<script>
-  const pass = prompt("Nhập mật khẩu:");
-  if (pass !== "123456") {
-    document.body.innerHTML = "⛔ Truy cập bị từ chối";
-  }
-</script>
-
 <div class="container">
-  <h2>AI Image → Clip</h2>
+  <h2>AI Image → Video</h2>
 
   <input type="file" id="imageInput" accept="image/*">
+  <textarea id="prompt" placeholder="Nhập prompt mô tả chuyển động..."></textarea>
+  <button onclick="generate()">Generate</button>
 
-  <input type="text" id="prompt" placeholder="Mô tả chuyển động AI...">
+  <div id="loading">⏳ AI đang xử lý...</div>
 
-  <button onclick="generate()">Generate Clip</button>
-
-  <div id="loading" class="loading"></div>
-  <div id="result"></div>
-
-  <footer>
-    Private AI Tool · Local Only
-  </footer>
+  <video id="resultVideo" controls></video>
 </div>
 
 <script>
 function generate() {
-  const file = document.getElementById("imageInput").files[0];
-  const result = document.getElementById("result");
-  const loading = document.getElementById("loading");
-
-  if (!file) {
-    alert("Chọn ảnh trước");
+  const img = document.getElementById("imageInput").files[0];
+  const prompt = document.getElementById("prompt").value;
+  if (!img || !prompt) {
+    alert("Vui lòng chọn ảnh và nhập prompt");
     return;
   }
 
-  loading.innerText = "AI đang xử lý hình ảnh...";
-  result.innerHTML = "";
+  document.getElementById("loading").style.display = "block";
+  document.getElementById("resultVideo").style.display = "none";
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    setTimeout(() => {
-      loading.innerText = "";
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      result.appendChild(img);
-    }, 1500);
-  };
+  // DEMO: giả lập AI render
+  setTimeout(() => {
+    document.getElementById("loading").style.display = "none";
+    const video = document.getElementById("resultVideo");
 
-  reader.readAsDataURL(file);
+    // video demo mẫu (thay bằng AI thật sau)
+    video.src = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+    video.style.display = "block";
+  }, 3000);
 }
 </script>
-
 </body>
 </html>
 
