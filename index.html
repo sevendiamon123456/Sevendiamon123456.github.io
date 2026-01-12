@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Image to Video</title>
+<title>Private AI Image to Video</title>
 
 <style>
 body {
@@ -21,6 +21,7 @@ body {
   background:#1a1a1a;
   padding:20px;
   border-radius:12px;
+  display:none;
 }
 h2 { text-align:center; }
 input, textarea, button {
@@ -50,20 +51,46 @@ video {
 </head>
 
 <body>
-<div class="container">
+
+<div class="container" id="app">
   <h2>AI Image → Video</h2>
 
   <input type="file" id="imageInput" accept="image/*">
-  <textarea id="prompt" placeholder="Nhập prompt mô tả chuyển động..."></textarea>
+  <textarea id="prompt" placeholder="Nhập mô tả chuyển động..."></textarea>
   <button onclick="generate()">Generate</button>
 
   <div id="loading">⏳ AI đang xử lý...</div>
-
   <video id="resultVideo" controls></video>
 </div>
 
 <script>
-function generate() {
+// 🔐 ĐỔI PASSWORD Ở ĐÂY
+const PASSWORD = "123456";
+
+// Hỏi mật khẩu khi vào web
+const userPass = prompt("Enter password:");
+if (userPass === PASSWORD) {
+  document.getElementById("app").style.display = "block";
+} else {
+  document.body.innerHTML = "<h2>Access Denied</h2>";
+}
+
+// ==========================
+// HÀM GỌI AI (DEMO HIỆN TẠI)
+// ==========================
+async function generateVideoDemo(imageFile, prompt) {
+  // DEMO: giả lập gọi API (sau này thay bằng AI thật)
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve("https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4");
+    }, 3000);
+  });
+}
+
+// ==========================
+// NÚT GENERATE
+// ==========================
+async function generate() {
   const img = document.getElementById("imageInput").files[0];
   const prompt = document.getElementById("prompt").value;
   if (!img || !prompt) {
@@ -74,17 +101,17 @@ function generate() {
   document.getElementById("loading").style.display = "block";
   document.getElementById("resultVideo").style.display = "none";
 
-  // DEMO: giả lập AI render
-  setTimeout(() => {
-    document.getElementById("loading").style.display = "none";
-    const video = document.getElementById("resultVideo");
+  // GỌI AI
+  const videoUrl = await generateVideoDemo(img, prompt);
 
-    // video demo mẫu (thay bằng AI thật sau)
-    video.src = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
-    video.style.display = "block";
-  }, 3000);
+  document.getElementById("loading").style.display = "none";
+  const video = document.getElementById("resultVideo");
+  video.src = videoUrl;
+  video.style.display = "block";
 }
 </script>
+
 </body>
 </html>
+
 
